@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agenda Pixel Art com Estilo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  /* Fonte Pixel Art */
+  body {
+    font-family: 'Press Start 2P', cursive;
+    background:
+      linear-gradient(90deg, #222 1px, transparent 1px),
+      linear-gradient(#222 1px, transparent 1px);
+    background-size: 16px 16px; /* tamanho do quadrado */
+    background-color: #121212;
+    color: #eee;
+    margin: 0; padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+
+  /* Container de formulário */
+  #inputArea {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  label {
+    font-size: 10px;
+    color: #0ff;
+    user-select: none;
+  }
+
+  input, select, button {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 4px;
+    background: #222;
+    color: #eee;
+    outline-offset: 2px;
+    outline-color: transparent;
+    box-shadow: 0 0 4px #0ff inset;
+    transition: outline-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  input:focus, select:focus, button:focus {
+    outline-color: #0ff;
+    box-shadow: 0 0 8px #0ff inset;
+  }
+
+  button {
+    cursor: pointer;
+    background: #0ff;
+    color: #000;
+    font-weight: bold;
+    user-select: none;
+  }
+
+  button:hover, button:focus-visible {
+    background: #00ccaa;
+  }
+
+  /* Container das colunas */
+  #columnsContainer {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    flex-grow: 1;
+    padding-bottom: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: #0ff transparent;
+  }
+  /* Scrollbar Webkit */
+  #columnsContainer::-webkit-scrollbar {
+    height: 10px;
+  }
+  #columnsContainer::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  #columnsContainer::-webkit-scrollbar-thumb {
+    background-color: #0ff;
+    border-radius: 4px;
+  }
+
+  /* Colunas por dia */
+  .day-column {
+    min-width: 180px;
+    background: #111;
+    border: 3px solid;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 10px;
+    box-sizing: border-box;
+    user-select: none;
+  }
+
+  /* Título do dia */
+  .day-title {
+    font-size: 12px;
+    margin-bottom: 14px;
+    text-align: center;
+    color: #fff;
+    text-shadow:
+      1px 1px 0 #000,
+      2px 2px 0 #0ff,
+      3px 3px 0 #00ccaa;
+  }
+
+  /* Tarefas */
+  .task {
+    background: #111;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    font-size: 9px;
+    border-radius: 5px;
+    color: #0ff;
+    box-shadow:
+      1px 1px 0 #000,
+      0 0 5px #0ff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: pixelBlink 3s ease-in-out infinite;
+  }
+
+  /* Botão apagar da tarefa */
+  .task button {
+    background: #b02a37;
+    border: none;
+    font-size: 10px;
+    padding: 0 7px;
+    cursor: pointer;
+    color: white;
+    border-radius: 3px;
+    box-shadow: none;
+    text-shadow: none;
+    user-select: none;
+    transition: background-color 0.2s ease;
+  }
+  .task button:hover, .task button:focus-visible {
+    background: #ff4455;
+    outline: none;
+  }
+
+  /* Animação pixel blink */
+  @keyframes pixelBlink {
+    0%, 100% {
+      text-shadow:
+        1px 1px 0 #000,
+        2px 2px 0 #0ff,
+        3px 3px 0 #00ccaa;
+      color: #0ff;
+    }
+    50% {
+      text-shadow:
+        1px 1px 0 #111,
+        2px 2px 0 #055,
+        3px 3px 0 #088;
+      color: #055;
+    }
+  }
+
+  /* Cores Pixel Art para dias */
+  .day-Segunda { border-color: #FF6F61; }
+  .day-Terça   { border-color: #6B5B95; }
+  .day-Quarta  { border-color: #88B04B; }
+  .day-Quinta  { border-color: #F7CAC9; color: #333; }
+  .day-Sexta   { border-color: #92A8D1; }
+  .day-Sábado  { border-color: #955251; }
+  .day-Domingo { border-color: #B565A7; }
+
+  /* Responsividade */
+  @media (max-width: 600px) {
+    #inputArea {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    input, select, button {
+      width: 100%;
+      font-size: 12px;
+      padding: 12px 10px;
+    }
+    #columnsContainer {
+      gap: 8px;
+      padding-bottom: 14px;
+    }
+    .day-column {
+      min-width: 140px;
+      padding: 10px 8px;
+    }
+    .task {
+      font-size: 8px;
+      padding: 6px 8px;
+    }
+  }
+
+</style>
+</head>
+<body>
+  <form id="inputArea" aria-label="Adicionar nova tarefa">
+    <label for="suggestion">Tarefa</label>
+    <input type="text" id="suggestion" aria-required="true" aria-describedby="taskHelp" placeholder="Digite a tarefa" />
+
+    <label for="day">Dia</label>
+    <select id="day" aria-required="true" aria-describedby="dayHelp" >
+      <option value="Segunda">Segunda</option>
+      <option value="Terça">Terça</option>
+      <option value="Quarta">Quarta</option>
+      <option value="Quinta">Quinta</option>
+      <option value="Sexta">Sexta</option>
+      <option value="Sábado">Sábado</option>
+      <option value="Domingo">Domingo</option>
+    </select>
+
+    <label for="startTime">Início</label>
+    <input type="time" id="startTime" aria-required="true" aria-describedby="startHelp" min="00:00" max="23:59" />
+
+    <label for="endTime">Fim</label>
+    <input type="time" id="endTime" aria-required="true" aria-describedby="endHelp" min="00:00" max="23:59" />
+
+    <button type="submit" id="addBtn">ADICIONAR</button>
+  </form>
+
+  <div id="columnsContainer" aria-live="polite" aria-label="Lista de tarefas por dia"></div>
+
+  <script>
+    const form = document.getElementById('inputArea');
+    const suggestionInput = document.getElementById('suggestion');
+    const daySelect = document.getElementById('day');
+    const startTimeInput = document.getElementById('startTime');
+    const endTimeInput = document.getElementById('endTime');
+    const columnsContainer = document.getElementById('columnsContainer');
+
+    let tasks = [];
+
+    // Salvar no localStorage
+    function saveTasks(){
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    // Carregar do localStorage
+    function loadTasks(){
+      const stored = localStorage.getItem('tasks');
+      if(stored){
+        tasks = JSON.parse(stored);
+      }
+    }
+
+    // Renderizar colunas por dia com tarefas
+    function renderColumns(){
+      columnsContainer.innerHTML = '';
+
+      // Agrupar tarefas por dia
+      const grouped = {};
+      tasks.forEach(task => {
+        if(!grouped[task.day]) grouped[task.day] = [];
+        grouped[task.day].push(task);
+      });
+
+      for(const day in grouped){
+        const dayTasks = grouped[day];
+
+        // Criar coluna
+        const col = document.createElement('section');
+        col.className = 'day-column day-' + day;
+        col.setAttribute('aria-label', `Tarefas de ${day}`);
+
+        // Título do dia
+        const title = document.createElement('h2');
+        title.className = 'day-title';
+        title.textContent = day;
+        col.appendChild(title);
+
+        // Tarefas
+        dayTasks.forEach(task => {
+          const taskDiv = document.createElement('article');
+          taskDiv.className = 'task';
+          taskDiv.textContent = `${task.startTime} - ${task.endTime} | ${task.text}`;
+
+          // Botão apagar
+          const delBtn = document.createElement('button');
+          delBtn.textContent = 'X';
+          delBtn.setAttribute('aria-label', `Remover tarefa: ${task.text}`);
+          delBtn.onclick = () => {
+            tasks = tasks.filter(t => t.id !== task.id);
+            saveTasks();
+            renderColumns();
+          };
+
+          taskDiv.appendChild(delBtn);
+          col.appendChild(taskDiv);
+        });
+
+        columnsContainer.appendChild(col);
+      }
+    }
+
+    // Adicionar tarefa via formulário
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const text = suggestionInput.value.trim();
+      const day = daySelect.value;
+      const startTime = startTimeInput.value;
+      const endTime = endTimeInput.value;
+
+      if(!text){
+        alert('Por favor, insira uma tarefa.');
+        suggestionInput.focus();
+        return;
+      }
+      if(!startTime || !endTime){
+        alert('Por favor, selecione horário de início e fim.');
+        if(!startTime) startTimeInput.focus();
+        else endTimeInput.focus();
+        return;
+      }
+      if(startTime >= endTime){
+        alert('O horário de início deve ser anterior ao horário de fim.');
+        startTimeInput.focus();
+        return;
+      }
+
+      const id = Date.now() + Math.random();
+
+      tasks.push({id, text, day, startTime, endTime});
+      saveTasks();
+      renderColumns();
+
+      form.reset();
+      suggestionInput.focus();
+    });
+
+    // Inicializa
+    loadTasks();
+    renderColumns();
+  </script>
+</body>
+</html>

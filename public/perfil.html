@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perfil do Usuário</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .fotos-perfil {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 20px;
+    }
+    .fotos-perfil img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.3s ease;
+      user-select: none;
+    }
+    .fotos-perfil img.selected {
+      border-color: #007bff;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-top: 10px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      padding: 8px;
+      margin-top: 5px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Perfil do Usuário</h1>
+
+  <div class="fotos-perfil">
+    <img src="perfil1.png" alt="Perfil 1" data-perfil="perfil1" />
+    <img src="perfil2.png" alt="Perfil 2" data-perfil="perfil2" />
+    <img src="perfil3.png" alt="Perfil 3" data-perfil="perfil3" />
+    <img src="perfil4.png" alt="Perfil 4" data-perfil="perfil4" />
+  </div>
+
+  <form id="perfilForm">
+    <label for="nome">Seu Nome:</label>
+    <input type="text" id="nome" required />
+
+    <label for="email">Conta Google (Email):</label>
+    <input type="email" id="email" required />
+
+    <label for="senha">Senha:</label>
+    <input type="password" id="senha" required />
+
+    <button type="submit">Salvar Perfil</button>
+  </form>
+
+  <script>
+    // Seleção da foto de perfil
+    const fotos = document.querySelectorAll('.fotos-perfil img');
+    let perfilSelecionado = null;
+
+    fotos.forEach(foto => {
+      foto.addEventListener('click', () => {
+        fotos.forEach(f => f.classList.remove('selected'));
+        foto.classList.add('selected');
+        perfilSelecionado = foto.getAttribute('data-perfil');
+      });
+    });
+
+    // Preencher campos com dados salvos
+    window.addEventListener('load', () => {
+      const nomeSalvo = localStorage.getItem('nome');
+      const emailSalvo = localStorage.getItem('email');
+      const senhaSalva = localStorage.getItem('senha');
+      const perfilSalvo = localStorage.getItem('perfilSelecionado');
+
+      if (nomeSalvo) document.getElementById('nome').value = nomeSalvo;
+      if (emailSalvo) document.getElementById('email').value = emailSalvo;
+      if (senhaSalva) document.getElementById('senha').value = senhaSalva;
+
+      if (perfilSalvo) {
+        const fotoSelecionada = document.querySelector(`.fotos-perfil img[data-perfil="${perfilSalvo}"]`);
+        if (fotoSelecionada) {
+          fotoSelecionada.classList.add('selected');
+          perfilSelecionado = perfilSalvo;
+        }
+      }
+    });
+
+    // Ao enviar o formulário
+    document.getElementById('perfilForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!perfilSelecionado) {
+        alert('Por favor, selecione uma foto de perfil.');
+        return;
+      }
+
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+
+      // Salvar no localStorage
+      localStorage.setItem('nome', nome);
+      localStorage.setItem('email', email);
+      localStorage.setItem('senha', senha);
+      localStorage.setItem('perfilSelecionado', perfilSelecionado);
+
+      // Redirecionar para index.html
+      window.location.href = 'index.html';
+    });
+  </script>
+
+</body>
+</html>
+
